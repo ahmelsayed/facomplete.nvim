@@ -13,27 +13,42 @@ Font Awesome Unicode glyph.
 - [blink.cmp](https://github.com/Saghen/blink.cmp)
 - A Nerd Font configured in Neovim to render Font Awesome private-use glyphs
 
-## Setup
+## LazyVim installation
+
+Create `~/.config/nvim/lua/plugins/facomplete.lua`:
 
 ```lua
-{
-  dir = "/path/to/facomplete.nvim",
-  name = "facomplete.nvim",
-  opts = {
-    sources = {
-      default = { "lsp", "path", "snippets", "buffer", "facomplete" },
-      providers = {
-        facomplete = {
-          name = "Font Awesome",
-          module = "facomplete.blink",
-        },
-      },
-    },
+return {
+  {
+    "saghen/blink.cmp",
+    dependencies = { "ahmelsayed/facomplete.nvim" },
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      opts.sources.default = opts.sources.default or {}
+      if not vim.tbl_contains(opts.sources.default, "facomplete") then
+        table.insert(opts.sources.default, "facomplete")
+      end
+
+      opts.sources.providers = opts.sources.providers or {}
+      opts.sources.providers.facomplete = {
+        name = "Font Awesome",
+        module = "facomplete.blink",
+      }
+
+      return opts
+    end,
   },
 }
 ```
 
-For LazyVim, add this as a plugin spec that extends `saghen/blink.cmp`.
+Restart Neovim, then enter Insert mode and type `fa:`. Continue typing an icon
+name or alias, then accept an entry to replace `fa:<query>` with its glyph.
+
+## Other blink.cmp setups
+
+Add `ahmelsayed/facomplete.nvim` as a plugin dependency and configure the
+`facomplete` provider as shown above. Ensure it is included in
+`sources.default`.
 
 ## Catalog
 
